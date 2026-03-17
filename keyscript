@@ -11,10 +11,10 @@ local lEncode, lDecode, lDigest = a3, aw, Z;
 -------------------------------------------------------------------------------
 --! CONFIGURATION
 -------------------------------------------------------------------------------
-local service = 22344 -- CHANGE TO YOUR SERVICE ID
-local secret = "f4397a57-b41f-44e4-bed4-4e93e364f727" -- CHANGE TO YOUR APP SECRET
+local service = 22344 
+local secret = "f4397a57-b41f-44e4-bed4-4e93e364f727" 
 local useNonce = true
-local mainScriptURL = "https://raw.githubusercontent.com/canope2/script/refs/heads/main/script" -- YOUR PROTECTED HUB LINK
+local mainScriptURL = "https://raw.githubusercontent.com/canope2/script/refs/heads/main/script" 
 
 -------------------------------------------------------------------------------
 --! CORE SERVICES & REQUEST HANDLING
@@ -34,7 +34,6 @@ end
 local fSetClipboard = setclipboard or toclipboard or function() end
 local fGetHwid = gethwid or function() return game:GetService("RbxAnalyticsService"):GetClientId() end
 
--- Check for API redundancy
 local function checkConnectivity()
     local response = safeRequest({Url = host .. "/public/connectivity", Method = "GET"})
     if not response or (response.StatusCode ~= 200 and response.StatusCode ~= 429) then
@@ -90,11 +89,6 @@ end
 -------------------------------------------------------------------------------
 --! UI DESIGN: ADVANCED STUDIO
 -------------------------------------------------------------------------------
-local function StartMainScript()
-    _G.Alen12345 = true 
-    loadstring(game:HttpGet(mainScriptURL))()
-end
-
 local Target = (game:GetService("CoreGui"):FindFirstChild("RobloxGui") or Player:WaitForChild("PlayerGui"))
 if Target:FindFirstChild("KeySystem_Master") then Target.KeySystem_Master:Destroy() end
 
@@ -174,10 +168,23 @@ Submit.MouseButton1Click:Connect(function()
     if ok then
         Submit.Text = "AUTHORIZED!"
         Submit.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
-        task.wait(1)
+        
+        -- FIXED: Correctly unlocking the main script
+        _G.Alen12345 = true 
+        
+        task.wait(0.5)
         KeySystem:Destroy()
-        _G.Secret = true
-        loadstring(game:HttpGet(mainScriptURL))()
+        
+        -- Load the main script
+        local success, mainScript = pcall(function()
+            return game:HttpGet(mainScriptURL)
+        end)
+        
+        if success then
+            loadstring(mainScript)()
+        else
+            warn("Failed to load main script from URL.")
+        end
     else
         Submit.Text = err:upper()
         Submit.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
