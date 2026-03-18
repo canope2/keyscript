@@ -14,7 +14,7 @@ local lEncode, lDecode, lDigest = a3, aw, Z;
 local service = 22344 
 local secret = "f4397a57-b41f-44e4-bed4-4e93e364f727" 
 local useNonce = true
-local mainScriptURL = "https://raw.githubusercontent.com/canope2/script/refs/heads/main/script" 
+local mainScriptURL = "https://raw.githubusercontent.com/canope2/script/refs/heads/main/script"
 
 -------------------------------------------------------------------------------
 --! CORE SERVICES & REQUEST HANDLING
